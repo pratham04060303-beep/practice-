@@ -37,14 +37,6 @@ T& operator*() {
 
 };
 
-//T* operator++(deque<T>::itrator& obj) {
-//	obj.iptr = dq  + ((obj.iptr - dq) + 1) % capacity_d;
-//	return obj.iptr ;
-//}
-
-//T& operator*(deque<T>::iterator& obj) {
-//	return *(obj.iptr);
-//}
 public:
 
 deque<T>::iterator begin() {
