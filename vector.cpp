@@ -34,6 +34,7 @@ iterator& operator--() {                                        // there is diff
 T& operator*() {                                             // there should be T& instead of T gives acctual value and also in stl it is done by T& = refrence 
 	return *(this->iptr);
 }
+
 };
 
 class reverse_iterator : public iterator {
@@ -76,6 +77,33 @@ vector(size_t capacity_v)  {
 	
 	// std::cout << v << std::endl;
 }
+
+vector(const vector& obj) {
+	this->capacity_v = obj.capacity_v;
+	this->size_v = obj.size_v;
+
+	this->v = (T*)malloc(capacity_v*sizeof(T));
+	
+	std::cout << "copy constructor " << std::endl;
+	
+	for(int x = 0;x != capacity_v; x++ ) {
+		*(this->v + x) = *(obj.v + x);
+	}
+
+	std::cout << "copied successfully " << std::endl;
+	std::cout <<  this->v << std::endl;
+	std::cout << obj.v  << std::endl;
+}
+
+/*vector& operator=(const vector& obj) {
+
+
+	std::cout << "operator called "  << std::endl;
+	vector v2(obj);
+
+	std::cout << v2.v  << std::endl;
+	return v2;
+}*/
 
 void push_back(T x) {
 	
@@ -136,6 +164,13 @@ inline __attribute__ ((always_inline)) void clear() {
 	return;
 }
 
+
+~vector() {
+	std::cout << "vector destructor " << std::endl; 
+	free(v);
+		
+}
+
 /*int operator!=(vector<T>::iterator& obj,vector<T>::iterator& obj1) {
 int operator!=(vector<T>::iterator& obj,vector<T>::iterator& obj1) {
 	return obj.iptr != obj1.iptr;                                              // inside class operator only overloaded if first parameter is this 
@@ -186,11 +221,25 @@ int main() {
 	std::cout << v.front() << std::endl;
 	std::cout << v.back() << std::endl;
 	std::cout << v.empty() << std::endl;
-	v.clear();
+	//v.clear();
 	std::cout << v.empty() << std::endl; 
 	std::cout << v.size() << std::endl;
 	std::cout << v.capacity() << std::endl;
 
+
+	vector<int>v2 = v;
+
+	for(vector<int>::iterator itr = v2.begin(); itr != v2.end() ; ++itr) {
+		std::cout << *itr << "-> ";
+	}
+	std::cout << std::endl;
+	vector<int>::reverse_iterator itr2 = v2.rbegin();
+	do{	
+		std::cout << *itr2 << "-> ";
+		--itr2;
+	}while(itr2 != v2.rend());
+
+	std::cout << std::endl;
 
 	return 0;
 }
