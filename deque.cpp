@@ -130,35 +130,6 @@ size_d++;
 
 }
 
-/*template<typename U>                                               // not perfect one 
-void emplace_back(U& x) {
-
-if(size_d == capacity_d) {
-	resize;
-
-}
-
-*(dq + size_d) = x;
-size_d += 1;
-
-
-}
-
-template<typename U>
-void emplace_front(U& x) {
-
-
-if(size_d == capacity_d) {
-	resize();
-}
-
-f = (f + capacity_d - 1) % capacity_d;
-
-*(dq + f) = x;
-
-si`aze_d += 1;
-}*/
-
 template<typename... U>
 void emplace_back(U&& ...x) {
 
