@@ -1,5 +1,6 @@
 
 #include<iostream>
+#include<queue> 
 
 template<typename T>
 class node {
@@ -132,6 +133,31 @@ parent = temp;
 }
 
 }*/
+
+void level_order (node<T>* temp) {
+std::queue<node<T>*>q;
+q.push(temp);
+size_t count = n_count;
+// std::cout << n_count << count << std::endl;
+
+	while(count != 0 ) {
+		//if(q.front() != NULL ){
+		std::cout << (q.front()->data) << " " ;
+		//}
+		if(q.front()->lnode != NULL ) {
+		q.push(q.front()->lnode);
+		}
+		if(q.front()->rnode != NULL ) {
+		q.push(q.front()->rnode);
+		}
+		q.pop();
+		count--;
+	}
+
+
+}
+
+
 
 void preorder(node<T>* temp) {
 
@@ -542,10 +568,6 @@ int main() {
     for(int x : arr) {
         b.insert(x);
     }
-	
-	for(auto it = b.begin(); it != b.end(); ++it) {
-        *it += 2; 
-    }
 
 	for(auto it = b.begin(); it != b.end(); ++it) {
         std::cout << *it << " ";
@@ -561,6 +583,10 @@ int main() {
 	for(itr; itr != b.cend(); ++itr) {
         std::cout << *itr << " ";
     }
+	std::cout << std::endl;
+
+	b.level_order(b.root);
+	std::cout << std::endl;
 
 
 	return 0;
