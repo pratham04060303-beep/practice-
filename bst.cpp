@@ -85,7 +85,7 @@ node<T>* search(T x) {
 node<T>* temp = this->root;
 
 if(root == NULL) {
-return temp;
+return NULL;
 }
 
 while(temp != NULL && x != temp->data) {
@@ -94,9 +94,6 @@ if(x < temp->data ) {
 temp = temp->lnode;
 }else if(x > temp->data ) {
 temp = temp->rnode;
-}
-if(temp == NULL) {
-return this->root;
 }
 }
 if(temp == NULL ) {
@@ -407,29 +404,165 @@ return *this;
 	n_count = 0;
 }
 
+// normal iterators 
+class iterator {
+	public:
+node<T>* iptr = NULL;
+node<T>* root = NULL;
+node<T>* next = NULL;
+
+public :
+iterator() {
+this->iptr = NULL;
+this->root = NULL;
+this->next = NULL;
+}
+
+T& operator*() {
+return this->iptr->data;
+}
+
+node<T>* nexty(node<T>* temp) {
+if(temp == NULL ) {
+return NULL;
+}
+
+nexty(temp->lnode);
+if(this->next == NULL) {
+if(temp->data > this->iptr->data ) {
+	// std::cout << temp->data << "-> ";
+	this->next = temp;
+}
+
+}
+nexty(temp->rnode);
+
+return this->next;
+
+}
+
+bst<T>::iterator& operator++() {
+this->next = NULL;
+this->iptr = nexty(this->root);
+return *this;
+}
+
+int operator!=(bst<T>::iterator& itr) {
+	return this->iptr != itr.iptr;
+}
+
+bst<T>::iterator& operator+(int x) {
+	while(x != 0) {
+	this->iptr = nexty(this->root);
+	x--;
+	}
+	return *this;
+}
+};
+
+
+bst<T>::iterator& begin() const {
+bst<T>::iterator* itr = new iterator();
+
+node<T>* temp = this->root;
+while(temp->lnode != NULL) {
+temp = temp->lnode;
+}
+itr->iptr = temp;
+itr->root = this->root;
+
+return *itr;
+
+}
+/*bst<T>::iterator& end() const {
+bst<T>::iterator* itr = new iterator();
+
+node<T>* temp = this->root;
+while(temp->rnode != NULL) {
+temp = temp->rnode;
+}
+itr->iptr = temp;
+
+return *itr;
+
+}*/
+
+bst<T>::iterator& end() const {
+bst<T>::iterator* itr = new iterator();
+itr->iptr = NULL;
+return *itr;
+}
+
+// constant iterators 
+
+class const_iterator : public iterator {
+public :
+
+const T& operator*() const {
+return this->iptr->data;
+}
+
+};
+
+bst<T>::const_iterator& cbegin() const {
+bst<T>::const_iterator* itr = new const_iterator();
+
+node<T>* temp = this->root;
+while(temp->lnode != NULL) {
+temp = temp->lnode;
+}
+itr->iptr = temp;
+itr->root = this->root;
+
+return *itr;
+
+}
+bst<T>::const_iterator& cend() const {
+bst<T>::const_iterator* itr = new const_iterator();
+itr->iptr = NULL;
+return *itr;
+}
+
+
+inline __attribute__ ((always_inline))bool contains(const T& x) {
+	return this->search(x) != NULL;
+}
+inline __attribute__ ((always_inline))bool empty() {
+	return root == NULL;
+}
+
 };
 
 int main() {
-bst<int> b1;
-for(int i = 0; i < 10; i++)
-    b1.insert(i);
-b1.inorder(b1.root);
-std::cout << std::endl;
-bst<int> b2(b1);    
-b2.inorder(b2.root);
-std::cout << std::endl;         // copy ctor
-bst<int> b3(std::move(b1));
-b3.inorder(b3.root); 
-std::cout << std::endl; // move ctor
 
-bst<int> b4;
-b4 = b2;            
-b4.inorder(b4.root);   
-std::cout << std::endl; // copy assignment
+    bst<int> b;
 
-bst<int> b5;
-b5 = std::move(b3); 
-b5.inorder(b5.root);    
-std::cout << std::endl;     // move assignment
-    return 0;
+    int arr[] = {50,30,70,20,40,60,80,35,45,55,65};
+
+    for(int x : arr) {
+        b.insert(x);
+    }
+	
+	for(auto it = b.begin(); it != b.end(); ++it) {
+        *it += 2; 
+    }
+
+	for(auto it = b.begin(); it != b.end(); ++it) {
+        std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+        std::cout << b.contains(70) << std::endl;
+        std::cout << b.contains(85) << std::endl;
+        std::cout << b.search(70) << std::endl;
+        std::cout << b.search(85) << std::endl;
+		std::cout << b.empty() << std::endl;
+
+		bst<int>::const_iterator itr = b.cbegin();
+	for(itr; itr != b.cend(); ++itr) {
+        std::cout << *itr << " ";
+    }
+
+
+	return 0;
 }
+
