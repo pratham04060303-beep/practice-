@@ -2,12 +2,6 @@
 
 #include<iostream> 
 
-// insert 
-// front 
-// back 
-// clear 
-// size 
-
 template<typename T>
 
 class deque {
@@ -72,18 +66,6 @@ deque<T>::iterator begin() {
 	
 }
 
-/*void operator=() {
-	
-	this->capacity_d = obj.capacity_d ;
-	this->size_d = obj.size_d;
-
-	deque<T>::iterator d1(this);
-	deque<T>::iterator d2(&obj);
-
-	for(d1 = this->beigin(); d1 != this->end(); ++d1) {
-		*(d2) = *(d1);
-	}
-}*/
 
 class reverse_iterator  {
 
