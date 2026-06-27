@@ -290,31 +290,141 @@ itr.index = this->capacity_h - 1;
 return itr;
 }
 
+// rule of five 
 
+hash_map(const hash_map<T,U>& h) {
+int x = 0;
+this->capacity_h = h.capacity_h;
+this->size_h = h.size_h;
+this->buctable = new bucket<T,U>* [this->capacity_h] ;
+
+while(x != h.capacity_h ) {
+// std::cout << x << std::endl;
+bucket<T,U>* temp1 = NULL;
+bucket<T,U>* temp = h.buctable[x];
+while(temp != NULL) {
+bucket<T,U>* buck = new bucket<T,U>();
+if(this->buctable[x] == NULL ) {
+this->buctable[x] = buck;	
+}
+buck->key = temp->key;
+buck->value = temp->value;
+if(temp1 != NULL ) {
+	temp1->next = buck;
+}
+temp1 = buck;
+temp = temp->next;
+// std::cout << x << std::endl;
+}
+// std::cout << x << std::endl;
+x++;
+}
+}
+
+hash_map<T,U>& operator=(const hash_map<T,U>& h) {
+if(this == &h ) {
+return *this;
+}
+
+this->clear();
+
+int x = 0;
+this->capacity_h = h.capacity_h;
+this->size_h = h.size_h;
+this->buctable = new bucket<T,U>* [this->capacity_h] ;
+
+while(x != h.capacity_h ) {
+// std::cout << x << std::endl;
+bucket<T,U>* temp1 = NULL;
+bucket<T,U>* temp = h.buctable[x];
+while(temp != NULL) {
+bucket<T,U>* buck = new bucket<T,U>();
+if(this->buctable[x] == NULL ) {
+this->buctable[x] = buck;	
+}
+buck->key = temp->key;
+buck->value = temp->value;
+if(temp1 != NULL ) {
+	temp1->next = buck;
+}
+temp1 = buck;
+temp = temp->next;
+// std::cout << x << std::endl;
+}
+// std::cout << x << std::endl;
+x++;
+}
+return *this;
+}
+
+
+hash_map(hash_map<T,U>&& h) {
+
+this->capacity_h = h.capacity_h;
+this->size_h = h.size_h;
+this->buctable = h.buctable;
+h.capacity_h = 11;
+h.size_h = 0;
+h.buctable = new bucket<T,U>* [capacity_h];
+
+
+}
+
+hash_map<T,U>& operator=(hash_map<T,U>&& h) {
+if(this == &h ) {
+return *this;
+}
+
+this->clear();
+this->capacity_h = h.capacity_h;
+this->size_h = h.size_h;
+this->buctable = h.buctable;
+h.capacity_h = 11;
+h.size_h = 0;
+h.buctable = new bucket<T,U>* [capacity_h];
+
+return *this;
+
+}
+
+~hash_map() {
+
+	std::cout << "hash_map destructor " << std::endl;
+	this->clear();
+	delete [] this->buctable;
+
+
+}
 
 };
 int main() {
 
     hash_map<int,int> h;
 
-    for(int i=0;i<10000;i++)
-        h.push(i,i*5);
-
-    int count = 0;
+    h.push(1,10);
+    h.push(2,20);
+    h.push(3,30);
 
     for(auto it = h.begin(); it != h.end(); ++it)
-    {
-        if(it->value != it->key * 5)
-        {
-            std::cout << "FAIL\n";
-            return 0;
-        }
+        it->value += 100;
 
-        count++;
-    }
+   h.display();
+   hash_map<int,int> h1(h);
 
-    if(count == h.size())
-        std::cout << "PASS\n";
+    
+   hash_map<int,int> h2;
+   h.display();
+   h2 = h1;
+   h.display();
+   h2.display();
+   hash_map<int,int> h3(std::move(h2));
+  h2.display();
+  h3.display();
+   hash_map<int,int> h4;
+   h4 = std::move(h3);
+h3.display();
+  h4.display();
+  
 
 	return 0;
 }
