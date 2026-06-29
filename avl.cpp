@@ -1,7 +1,7 @@
 
 
 #include<iostream>
-
+#include<queue>
 
 template<typename T>
 
@@ -42,14 +42,6 @@ this->root = NULL;
 }
 
 // checkbalance 
-
-// ll
-// rr
-// lr
-// rl
-//
-// ll 
-
 long height(node<T>* n ) {
 	if(n != NULL ){
 		return n->height;
@@ -193,7 +185,7 @@ if(this->root == NULL ) {
 this->root = n;
 std::cout << n->data << std::endl;
 updateheight(this->root);
-
+this->size_a++;
 return;
 }
 node<T>* temp = this->root;
@@ -212,9 +204,7 @@ temp = temp->rnode;
 delete n;
 return;
 }
-this->size_a++;
 // std::cout << temp->data << std::endl;
-
 }
  // std::cout << n->data << std::endl;
 if(temp1->data < x) {
@@ -224,6 +214,8 @@ temp1->rnode = n;
 temp1->lnode = n;
  std::cout << temp1->lnode->data << std::endl;
 }
+
+this->size_a++;
 //this->preorder(this->root );
 //std::cout << "root " << this->root->data << std::endl; 
 updateheight(this->root);
@@ -240,6 +232,150 @@ preorder(temp->lnode);
 preorder(temp->rnode);
 }
 
+void postorder(node<T>* temp) {
+if(temp == NULL ) {
+return;
+}
+postorder(temp->lnode);
+postorder(temp->rnode);
+std::cout << temp->data /*<< " ( "  << balance(temp) << " ) "*/ << "-> ";
+}
+
+void inorder(node<T>* temp) {
+if(temp == NULL ) {
+return;
+}
+inorder(temp->lnode);
+std::cout << temp->data /*<< " ( "  << balance(temp) << " ) "*/ << "-> ";
+inorder(temp->rnode);
+}
+
+void levelorder(node<T>* temp ) {
+std::queue<node<T>*> q;
+size_t node_a = size_a;
+q.push(this->root);
+
+while(temp != NULL && node_a != 0 ) {
+
+	std::cout << q.front()->data << "-> ";
+if(q.front()->lnode != NULL ) {
+	q.push(q.front()->lnode);
+}
+if(q.front()->rnode != NULL ) {
+q.push(q.front()->rnode);
+}
+q.pop();
+node_a--;
+}
+std::cout << std::endl;
+}
+
+// iterators 
+
+class iterator {
+public :
+node<T>* iptr = NULL;
+node<T>* root = NULL;
+node<T>* next = NULL;
+public :
+iterator() {
+this->iptr = NULL;
+this->root = NULL;
+this->next = NULL;
+}
+
+
+bool operator!=(avl<T>::iterator& itr ) {
+return this->iptr != itr.iptr;
+}
+
+node<T>*  nexty(node<T>* temp ) {
+if(temp == NULL ) {
+return NULL;
+}
+nexty(temp->lnode);
+if(this->next == NULL ) {
+if(temp->data > this->iptr->data ) {
+	this->next = temp;
+}
+}
+nexty(temp->rnode);
+
+return this->next;
+}
+
+avl<T>::iterator& operator++() {
+	// std::cout << this->root->data << std::endl;
+	this->next = NULL;
+	this->iptr = nexty(this->root);
+	this->next = NULL;
+	// std::cout << this->next->data << std::endl;
+return *this;
+}
+
+void operator=(avl<T>::iterator& itr) {
+this->iptr = itr.iptr;
+this->root = itr.root;
+this->next = itr.next;
+}
+
+T& operator*() {
+return this->iptr->data;
+}
+};
+
+avl<T>::iterator& begin()  {
+	// std::cout << "begin called " << std::endl;
+	// std::cout << this->root->data << std::endl;
+avl<T>::iterator* itr = new avl<T>::iterator();
+itr->iptr = this->min();
+itr->root = this->root;
+itr->next = NULL;
+return *itr;
+}
+
+avl<T>::iterator& end() const  {
+avl<T>::iterator* itr = new avl<T>::iterator();
+itr->root = this->root;
+itr->iptr = NULL;
+itr->next = NULL;
+return *itr;
+}
+
+node<T>* min() {
+node<T>* temp = this->root;
+while(temp->lnode != NULL ) {
+temp = temp->lnode;	
+}
+return temp;
+}
+node<T>* max() {
+node<T>* temp = this->root;
+while(temp->rnode != NULL ) {
+temp = temp->rnode;	
+}
+return temp;
+}
+
+void erase(T x) {
+node<T>* temp = this->root;
+node<T>* temp1 = this->root;
+while(temp != NULL && temp->data != x ) {
+temp1 = temp;
+if(x > temp->data ) {
+temp = temp->rnode;
+}else{
+temp = temp->lnode;
+}
+}
+if(temp == NULL ) {
+return;
+}
+std::cout << temp1->data << " " << temp->data << std::endl;
+
+
+}
+
 };
 
 int main() {
@@ -247,19 +383,32 @@ int main() {
 	node<int>* node1 = new node<int>();
 	avl<int> a;
 
-	a.push(13);
-	a.push(14);
-	a.push(15);
-	a.push(12);
-	a.push(11);
-	a.push(17);
-	//a.push(13);
-	a.push(16);
+	a.push(1);
+	a.push(2);
+	a.push(3);
+	a.push(4);
+	a.push(5);
+	a.push(6);
+	a.push(7);
 	a.push(8);
 	a.push(9);
-	a.push(1);
+	a.push(10);
+	// a.push(11);
 	a.preorder(a.root);
 	std::cout << std::endl;
+	a.postorder(a.root);
+	std::cout << std::endl;
+	a.inorder(a.root);
+	std::cout << std::endl;
+	a.levelorder(a.root);
+	// std::cout << a.min()->data << std::endl;
+	avl<int>::iterator itr;
+
+	for(itr = a.begin(); itr != a.end(); ++itr) {
+		std::cout << *(itr) << "-> ";
+	}
+	std::cout << std::endl;
+	a.erase(5);
 
 	return 0;
 }
