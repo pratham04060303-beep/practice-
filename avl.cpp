@@ -101,16 +101,6 @@ while(temp != NULL && temp->data != n->data ) {
 	}
 	return;
 }*/
-if(balance(this->root) > 1 ) {
-		this->root = temp1;
-		temp2->lnode = temp1->rnode;
-		temp1->rnode = temp2;
-	}else if(balance(this->root) < -1){
-		this->root = temp1;
-		temp2->rnode = temp1->lnode;
-		temp1->lnode = temp2;
-	}
-	updateheight(this->root);
 if(temp2 == this->root ) {
 	if(balance(this->root) > 1 ) {
 		this->root = temp1;
@@ -128,7 +118,7 @@ if(temp2 == this->root ) {
 
 if(balance(temp2) > 1){
 // ll
-if(balance(temp1) > 0) {
+if(balance(temp1) >= 0) {
 if(temp3->lnode == temp2 ) {
 	temp3->lnode = temp1;
 }else {
@@ -136,10 +126,10 @@ if(temp3->lnode == temp2 ) {
 }
 temp2->lnode = temp1->rnode;
 temp1->rnode = temp2;
-}
+
 updateheight(this->root);
 // lr
-if(balance(temp1) < 0) {
+}else if(balance(temp1) < 0) {
 	temp2->lnode = temp;
 	temp1->rnode = temp->lnode;
 	temp->lnode = temp1;
@@ -151,12 +141,13 @@ if(temp2 == temp3->lnode) {
 }
 	temp2->lnode = temp->rnode;
 	temp->rnode = temp2;
-}
+
 
 updateheight(this->root);
+}
 }else if(balance(temp2) < -1 ) {
 // rr
-if(balance(temp1) < 0) {
+if(balance(temp1) <= 0) {
 
 if(temp2 == temp3->lnode) {
 	temp3->lnode = temp1;
@@ -165,10 +156,9 @@ if(temp2 == temp3->lnode) {
 }
 temp2->rnode = temp1->lnode;
 temp1->lnode = temp2;
-}
 updateheight(this->root);
 // rl
-if(balance(temp1) > 0) {
+}else if(balance(temp1) > 0) {
 temp2->rnode = temp;
 temp1->lnode = temp->rnode;
 temp->rnode = temp1;
@@ -180,8 +170,9 @@ if(temp2 == temp3->lnode) {
 }
 temp2->rnode = temp->lnode;
 temp->lnode = temp2;
-}
-updateheight(this->root);	
+
+updateheight(this->root);
+}	
 }
 balance_avl(temp1);
 }
@@ -263,10 +254,8 @@ void levelorder(node<T>* temp ) {
 std::queue<node<T>*> q;
 size_t node_a = size_a;
 q.push(this->root);
-
 while(temp != NULL && node_a != 0 ) {
-
-	std::cout << q.front()->data << "-> ";
+std::cout << q.front()->data << "-> ";
 if(q.front()->lnode != NULL ) {
 	q.push(q.front()->lnode);
 }
@@ -469,6 +458,8 @@ node_a--;
 }
 node_a = this->size_a;
 while(node_a != 0 ){
+    std::cout << node_a << "-> " ;
+    std::cout << q1.front()->data << std::endl;
 	updateheight(this->root);
 	balance_avl(q1.front());
 	q1.pop();
@@ -476,17 +467,6 @@ while(node_a != 0 ){
 }
 
 }
-
-/*void balance_all(node<T>* temp) {
-if(temp == NULL ) {
-return;
-}
-
-balance_all(temp->lnode);
-balance_avl(temp);
-balance_all(temp->rnode);
-
-}*/
 };
 
 int main() {
@@ -521,8 +501,9 @@ int main() {
 	std::cout << std::endl;
 	a.erase(1);
 	a.erase(9);
-	//a.erase(15);
-	//a.erase(17);
+	a.erase(15);
+	a.erase(17);
+    a.erase(16);
 
 	std::cout << a.root->data << std::endl;
 	a.levelorder(a.root);	
