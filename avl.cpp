@@ -72,8 +72,8 @@ if(n == NULL  ) {
 	return;
 }
 
-if(n == this->root) {
-	return;
+if(n == this->root ) {
+return;
 }
 node<T>* temp = this->root;
 node<T>* temp1 = this->root;
@@ -101,6 +101,16 @@ while(temp != NULL && temp->data != n->data ) {
 	}
 	return;
 }*/
+if(balance(this->root) > 1 ) {
+		this->root = temp1;
+		temp2->lnode = temp1->rnode;
+		temp1->rnode = temp2;
+	}else if(balance(this->root) < -1){
+		this->root = temp1;
+		temp2->rnode = temp1->lnode;
+		temp1->lnode = temp2;
+	}
+	updateheight(this->root);
 if(temp2 == this->root ) {
 	if(balance(this->root) > 1 ) {
 		this->root = temp1;
@@ -111,7 +121,7 @@ if(temp2 == this->root ) {
 		temp2->rnode = temp1->lnode;
 		temp1->lnode = temp2;
 	}
-	updateheight(this->root);
+
 }
 //std::cout << balance(temp2) << std::endl;
 //std::cout << balance(temp1) << std::endl;
@@ -174,7 +184,6 @@ temp->lnode = temp2;
 updateheight(this->root);	
 }
 balance_avl(temp1);
-
 }
 void push(T x) {
 node<T>* n = new node<T>();
@@ -190,7 +199,7 @@ return;
 }
 node<T>* temp = this->root;
 node<T>* temp1 = NULL;
-while(temp != NULL){
+while(temp != NULL ) {
 temp1 = temp;
 if(x < temp->data ) {
 temp = temp->lnode;
@@ -359,7 +368,7 @@ return temp;
 
 void erase(T x) {
 node<T>* temp = this->root;
-node<T>* temp1 = this->root;
+node<T>* temp1 = this->root;        
 while(temp != NULL && temp->data != x ) {
 temp1 = temp;
 if(x > temp->data ) {
@@ -373,9 +382,111 @@ return;
 }
 std::cout << temp1->data << " " << temp->data << std::endl;
 
+if(temp->lnode == NULL && temp->rnode == NULL ) {
+	if(temp1->rnode == temp) {
+	temp1->rnode = NULL;
+	}else{
+	temp1->lnode = NULL;
+	}
+	delete temp;
+	this->updateheight(this->root);
+	std::cout << temp1->data << std::endl;
+	this->balance_avl(this->root);
+	size_a--;
+this->balance_all();
+	return;
+}
+
+if(temp->lnode != NULL && temp->rnode != NULL  ) {
+if(temp1->lnode == temp ) {
+temp1->lnode = temp->lnode;
+}else{
+temp1->rnode = temp->lnode;
+} 
+
+node<T>* temp2 = temp->lnode;
+while(temp2->rnode != NULL ) {
+temp2 = temp2->rnode;
+}
+std::cout << temp2->data << std::endl;
+temp2->rnode = temp->rnode;
+//std::cout << temp2->rnode->data << std::endl;
+delete temp;
+size_a--;
+this->updateheight(this->root);
+this->balance_all();
 
 }
 
+}
+
+/*void balance_all() {
+	std::cout << "balanace all called " << std::endl;
+std::queue<node<T>*> q;
+std::queue<node<T>*> q1;
+size_t size_n  = this->size_a;
+q.push(this->root);
+	std::cout << "balanace all called " << std::endl;
+
+while(size_n != 0 ) {
+	//std::cout << size_n << std::endl;
+std::cout << q.front()->data << std::endl;
+	q1.push(q.front());
+	if(q.front()->lnode != NULL ){
+	q.push(q.front()->lnode);
+	}
+	if(q.front()->lnode != NULL ){
+	q.push(q.front()->rnode);
+	}
+	q.pop();
+size_n--;
+}
+size_t x = this->size_a;
+std::cout << "done " << std::endl; 
+while(x != 0 ) {
+	std::cout << q1.front()->data << std::endl;
+	q1.pop();
+	x--;
+}*/
+
+void balance_all() {
+std::queue<node<T>*> q;
+std::queue<node<T>*> q1;
+std::cout << "balance all called " << std::endl; 
+size_t node_a = size_a;
+q.push(this->root);
+
+while(node_a != 0 ) {
+	q1.push(q.front());
+if(q.front()->lnode != NULL ) {
+	q.push(q.front()->lnode);
+}
+if(q.front()->rnode != NULL ) {
+q.push(q.front()->rnode);
+}
+q.pop();
+node_a--;
+}
+node_a = this->size_a;
+while(node_a != 0 ){
+	updateheight(this->root);
+	balance_avl(q1.front());
+	q1.pop();
+	node_a--;
+}
+
+}
+
+/*void balance_all(node<T>* temp) {
+if(temp == NULL ) {
+return;
+}
+
+balance_all(temp->lnode);
+balance_avl(temp);
+balance_all(temp->rnode);
+
+}*/
 };
 
 int main() {
@@ -383,16 +494,16 @@ int main() {
 	node<int>* node1 = new node<int>();
 	avl<int> a;
 
-	a.push(1);
-	a.push(2);
-	a.push(3);
-	a.push(4);
-	a.push(5);
-	a.push(6);
-	a.push(7);
+	a.push(13);
+	a.push(14);
+	a.push(15);
+	a.push(12);
+	a.push(11);
+	a.push(17);
+	a.push(16);
 	a.push(8);
 	a.push(9);
-	a.push(10);
+	a.push(1);
 	// a.push(11);
 	a.preorder(a.root);
 	std::cout << std::endl;
@@ -408,7 +519,13 @@ int main() {
 		std::cout << *(itr) << "-> ";
 	}
 	std::cout << std::endl;
-	a.erase(5);
+	a.erase(1);
+	a.erase(9);
+	//a.erase(15);
+	//a.erase(17);
 
+	std::cout << a.root->data << std::endl;
+	a.levelorder(a.root);	
 	return 0;
+
 }
