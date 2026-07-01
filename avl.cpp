@@ -256,10 +256,12 @@ void levelorder(node<T>* temp ) {
 	if(temp == NULL ) {
 		return;
 	}
+	std::cout << "level order called " <<std::endl;
 std::queue<node<T>*> q;
 size_t node_a = size_a;
+std::cout << this->size_a << std::endl;
 q.push(this->root);
-while(temp != NULL && node_a != 0 ) {
+while(q.empty() != 1/*temp != NULL && node_a != 0*/ ) {
 std::cout << q.front()->data << "-> ";
 if(q.front()->lnode != NULL ) {
 	q.push(q.front()->lnode);
@@ -549,7 +551,135 @@ while(node_a != 0 ){
 	node_a--;
 
 }
+}
 
+// rule of 5
+
+avl(const avl<T>& a ) {
+this->size_a = a.size_a;
+std::queue<node<T>*> q;
+// std::cout << "balance all called " << std::endl; 
+size_t node_a = size_a;
+q.push(a.root);
+while(node_a != 0 ) {
+	this->push(q.front()->data);
+if(q.front()->lnode != NULL ) {
+	q.push(q.front()->lnode);
+}
+if(q.front()->rnode != NULL ) {
+q.push(q.front()->rnode);
+}
+q.pop();
+node_a--;
+}
+
+this->size_a = a.size_a;
+}
+//avl<T>& operator=(const avl<T>& a ) {
+avl<T>& operator=(const avl<T>& a ) {
+if(this == &a) {
+	return *this;
+}
+
+this->clear();
+this->size_a = a.size_a;
+std::queue<node<T>*> q;
+// std::cout << "balance all called " << std::endl; 
+size_t node_a = size_a;
+q.push(a.root);
+while(node_a != 0 ) {
+	this->push(q.front()->data);
+if(q.front()->lnode != NULL ) {
+	q.push(q.front()->lnode);
+}
+if(q.front()->rnode != NULL ) {
+q.push(q.front()->rnode);
+}
+q.pop();
+node_a--;
+}
+
+this->size_a = a.size_a;
+// std::cout << this->root << std::endl;
+return *this;
+}
+
+avl(avl<T>&& a ) {
+	this->size_a = a.size_a;
+	this->root = a.root;
+	this->height = a.height;
+	a.size_a = 0;
+	a.height = 1;
+	this->root = NULL;
+}
+
+
+avl<T>& operator=(avl<T>&& a ) {
+	if(this = &a ) {
+		return *this;
+	}
+	this->clear();
+	this->size_a = a.size_a;
+	this->root = a.root;
+	this->height = a.height;
+	a.size_a = 0;
+	a.height = 1;
+	this->root = NULL;
+}
+
+
+~avl() {
+	std::cout << "avl destructor " << std::endl;
+	this->clear();
+
+}
+void clear() {
+	if(this->root == NULL ) {
+		return;
+	}
+std::queue<node<T>*> q;
+// std::cout << "balance all called " << std::endl;
+// std::cout << this->root << std::endl; 
+size_t node_a = size_a;
+q.push(this->root);
+while(/*q.empty() != 1*/this->root != NULL && node_a != 0 ) {
+if(q.front()->lnode != NULL ) {
+	q.push(q.front()->lnode);
+}
+if(q.front()->rnode != NULL ) {
+q.push(q.front()->rnode);
+}
+delete q.front();
+q.pop();
+node_a--;
+}
+
+this->size_a = 0;
+this->root = NULL ;
+
+}
+
+node<T>* find(T x) {
+	node<T>* temp = this->root;
+while(temp != NULL && temp->data != x  ) {
+if(temp->data < x ) {
+	temp = temp->rnode;
+}else if(temp->data > x ) {
+	temp = temp->lnode;
+}
+}
+return temp;
+}
+
+inline __attribute__ ((always_inline)) size_t size() {
+	return size_a;
+}
+
+inline __attribute__ ((always_inline)) int empty() {
+	return this->root == NULL ;
+}
+inline __attribute__ ((always_inline)) int contain(T x) {
+	return this->find(x) != NULL ;
 }
 };
 
@@ -569,7 +699,7 @@ int main() {
 	a.push(9);
 	a.push(1);
 	// a.push(11);
-	a.preorder(a.root);
+	/* a.preorder(a.root);
 	std::cout << std::endl;
 	a.postorder(a.root);
 	std::cout << std::endl;
@@ -582,19 +712,35 @@ int main() {
 	for(itr = a.begin(); itr != a.end(); ++itr) {
 		std::cout << *(itr) << "-> ";
 	}
-	std::cout << std::endl;
-	a.erase(1);
-	a.erase(9);
+	std::cout << std::endl;*/
+	// a.erase(14);
+	/*a.erase(9);
 	a.erase(15);
 	a.erase(17);
-    a.erase(16);
+	a.erase(14);
+    
+	a.erase(16);
     a.erase(16);
     a.erase(8);
     a.erase(14);
     a.erase(11);
     a.erase(13);
-    a.erase(12);
-	a.levelorder(a.root);	
+    a.erase(12);*/
+	a.levelorder(a.root);
+
+	
+	avl<int> a1(a);
+	std::cout << a1.root << std::endl;
+	a1.inorder(a1.root);
+	std::cout << std::endl;
+	a1.levelorder(a1.root);
+	a1 = a;
+a1.levelorder(a1.root);
+
+std::cout << a1.empty() << std::endl;
+std::cout << a1.size() << std::endl;
+std::cout << a1.find(2) << std::endl;
+std::cout << a1.contain(2) << std::endl;
 	return 0;
 
 }
